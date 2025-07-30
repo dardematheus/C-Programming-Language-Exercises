@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define FILENAME "histography.txt"
+#define FILENAME "words.txt"
 
 void main(){
     int wordsize[10];
