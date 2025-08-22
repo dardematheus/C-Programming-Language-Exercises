@@ -16,10 +16,6 @@ typedef struct
 int stackpush(closurestack *stack[], char insert, int lineno);
 int stackpop(closurestack *stack[], int c);
 
-//TODO:
-// Implementar checagem de comentarios e de quote
-// Implementar erros quando ; estiver faltando
-
 int main(int argc, char *argv[])
 {
     FILE *fptr;
@@ -45,22 +41,33 @@ int main(int argc, char *argv[])
     printf("Checking %s for Common Syntax Errors\n", argv[1]);
     printf("------------------------------------\n");
 
+    isQuoted = false;
     linecounter = 1;
     while((c = fgetc(fptr)) != EOF){
         if(c == '\n'){
             linecounter++;
+            isComment = false;
+        }
+        if(c == '/'){
+            if(fgetc(fptr) == '/'){
+                isComment = true;
+            }
+            fseek(fptr, 0, SEEK_CUR);
         }
         if(c == '"'){
             isQuoted = !isQuoted;
         }
-        if(!isQuoted && c == '{' || c == '[' || c == '('){
-            stackpush(stack, c, linecounter);
-        }
-        if(c == '}' || c == ']'){
-            stackpop(stack, c - 2);
-        }
-        if(c == ')'){
-            stackpop(stack, c - 1);
+        if(!isComment && !isQuoted){
+            if(c == '{' || c == '[' || c == '('){
+                stackpush(stack, c, linecounter);
+            }
+            
+            if(c == '}' || c == ']'){
+                stackpop(stack, c - 2);
+            }
+            if(c == ')'){
+                stackpop(stack, c - 1);
+            }
         }
     }
 
