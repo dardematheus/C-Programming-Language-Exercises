@@ -16,7 +16,6 @@ typedef struct
 int stackpush(closurestack *stack[], char insert, int lineno);
 int stackpop(closurestack *stack[], int c);
 int freestack(closurestack *stack[]);
-int printstack(closurestack *stack[]);
 
 int main(int argc, char *argv[])
 {
@@ -63,15 +62,12 @@ int main(int argc, char *argv[])
         if(!isComment && !isQuoted){
             if(c == '{' || c == '[' || c == '('){
                 stackpush(stack, c, linecounter);
-                printstack(stack);
             }
             if(c == '}' || c == ']'){
                 stackpop(stack, c - 2);
-                printstack(stack);
             }
             if(c == ')'){
                 stackpop(stack, c - 1);
-                printstack(stack);
             }
         }
     }
@@ -129,15 +125,5 @@ int freestack(closurestack *stack[])
     for(int i = 0; i < stackpointer; i++){
         free(stack[i]);
     }
-    return 0;
-}
-
-int printstack(closurestack *stack[])
-{
-    printf("\n STACK: \n");
-    for(int i = 0; i < stackpointer; i++){
-        printf("[%c - %d]", stack[i]->chartoken, stack[i]->lineno);
-    }
-    printf("\n");
     return 0;
 }
